@@ -6,9 +6,12 @@ class FiltersController < ApplicationController
   def index
     if params[:year].present?
       @dates = Crime.where(arrest: "true", year: params["year"]).group(:date).count
-      @weathers = Weather.where(date[0..3]: params["year"] )
     else
-      @dates = Crime.where(arrest: "true").group(:date).count
+      @dates = Crime.where(arrest: "true").group("date(date)").count
+    end
+    @datearr = @dates.to_a
+    @datearr.each do |date|
+        date << Weather.find_by(date: date[0]).max_temperature_f
     end
   end
 

@@ -2,28 +2,45 @@
 
 <style>
     body {
-          font: 10px sans-serif;
-        }
+        font: 10px sans-serif;
+      }
 
-        .axis path,
-        .axis line {
-          fill: none;
-          stroke: #000;
-          shape-rendering: crispEdges;
-        }
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
 
-        .valueline {
-          fill: none;
-          stroke: red;
-          stroke-width: .1;
-        }
+      .axis path
+      .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
 
-        .area {
-          fill: steelblue;
-          stroke-width: 1;
-          stroke: red;
-        }
+      #Raxis {
+        stroke: purple;
+      }
 
+      .valueline {
+        fill: none;
+        stroke: red;
+        stroke-width: .1;
+      }
+
+      .valueline2 {
+        fill: none;
+        stroke: purple;
+        stroke-width: .5;
+      }
+
+      .area {
+        fill: steelblue;
+        stroke-width: 1;
+        stroke: red;
+        opacity: .5;
+      }
 
 </style>
 
@@ -9497,17 +9514,20 @@
 }();
   </script>
   <div id="test-chart"></div>
-  <script>
+    <script>
     var margin = {top: 20, right: 20, bottom: 30, left: 50},
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
-    var parseDate = d3.time.format("%m/%d/%Y").parse;
+    var parseDate = d3.time.format("%Y-%m-%d").parse;
 
     var x = d3.time.scale()
         .range([0, width]);
 
     var y = d3.scale.linear()
+        .range([height, 0]);
+
+    var y1 = d3.scale.linear()
         .range([height, 0]);
 
     var xAxis = d3.svg.axis()
@@ -9518,6 +9538,9 @@
     var yAxis = d3.svg.axis()
         .scale(y)
         .orient("left");
+
+    var yAxisRight = d3.svg.axis().scale(y1)
+        .orient("right");
 
     var area = d3.svg.area()
         .x(function(d) { return x(d.date); })
@@ -9531,19 +9554,25 @@
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var valueline = d3.svg.line()
-    .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.crimes); });
+        .x(function(d) { return x(d.date); })
+        .y(function(d) { return y(d.crimes); });
 
-    d3.json('/filters.json?utf8=✓&category=All&year=2015&commit=Filter', function (data) {
+    var valueline2 = d3.svg.line()
+        .x(function(d) { return x(d.date); })
+        .y(function(d) { return y1(d.temperature); });
+
+    d3.json('/crimes.json', function (data) {
       data.forEach(function(d) {
-        d.date = parseDate(d.date);
+        d.date = parseDate(d.crimedate);
         d.crimes = +d.crimes;
+        d.temperature = +d.temperature;
       });
 
     data.sort(function(a, b){  return d3.ascending(a.date, b.date);  });
 
     x.domain(d3.extent(data, function(d) { return d.date; }));
     y.domain([0, d3.max(data, function(d) { return d.crimes; })]);
+    y1.domain([0, d3.max(data, function(d) { return d.temperature; })]);
 
     svg.append("path")
       .datum(data)
@@ -9553,6 +9582,10 @@
     svg.append("path")
         .attr("class", "valueline")
         .attr("d", valueline(data));
+
+    svg.append("path")
+        .attr("class", "valueline2")
+        .attr("d", valueline2(data));
 
     svg.append("g")
       .attr("class", "x axis")
@@ -9568,11 +9601,21 @@
       .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text("Crimes");
+
+    svg.append("g")
+          .attr("class", "y axis")
+          .attr("id", "RAxis")
+          .attr("transform", "translate(" + width + " ,0)")
+          .style("fill", "red")
+          .call(yAxisRight)
+        .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 6)
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text("Temperature");
     });
   </script>
-<%= javascript_tag do %>
-alert('<%= response %>');
-<%end%>
 
 
 <br>

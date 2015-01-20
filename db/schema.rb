@@ -19,63 +19,7 @@ ActiveRecord::Schema.define(version: 20150120043622) do
   create_table "crimes", force: :cascade do |t|
     t.integer  "crime_id"
     t.string   "case_number"
-    t.integer  "year"
-    t.string   "date"
-    t.time     "time"
-    t.string   "block"
-    t.integer  "iucr"
-    t.string   "primary_type"
-    t.string   "description"
-    t.string   "location_description"
-    t.string   "arrest"
-    t.string   "domestic"
-    t.integer  "beat"
-    t.integer  "district"
-    t.integer  "ward"
-    t.integer  "community_area"
-    t.integer  "fbi_code"
-    t.integer  "x_coordinate"
-    t.integer  "y_coordinate"
-    t.date     "updated_on"
-    t.string   "latitude"
-    t.string   "longitude"
-    t.string   "location"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-  end
-
-  create_table "misdemeanors", force: :cascade do |t|
-    t.integer  "crime_id"
-    t.string   "case_number"
     t.datetime "date"
-    t.string   "block"
-    t.integer  "iucr"
-    t.string   "primary_type"
-    t.string   "description"
-    t.string   "location_description"
-    t.string   "arrest"
-    t.string   "domestic"
-    t.integer  "beat"
-    t.integer  "district"
-    t.integer  "ward"
-    t.integer  "community_area"
-    t.integer  "fbi_code"
-    t.integer  "x_coordinate"
-    t.integer  "y_coordinate"
-    t.date     "updated_on"
-    t.string   "latitude"
-    t.string   "longitude"
-    t.string   "location"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-  end
-
-  create_table "small_crimes", force: :cascade do |t|
-    t.integer  "crime_id"
-    t.string   "case_number"
-    t.integer  "year"
-    t.date     "date"
-    t.time     "time"
     t.string   "block"
     t.integer  "iucr"
     t.string   "primary_type"
@@ -125,7 +69,7 @@ ActiveRecord::Schema.define(version: 20150120043622) do
   end
 
   create_table "weathers", force: :cascade do |t|
-    t.string   "date"
+    t.date     "date"
     t.integer  "max_temperature_f"
     t.integer  "mean_temperature_f"
     t.integer  "min_temperature_f"

@@ -7,7 +7,7 @@ class CrimesController < ApplicationController
     if params[:year].present?
       @dates = Crime.where(arrest: "true", year: params["year"]).group(:date).count
     else
-      @dates = Crime.where(arrest: "true").group("date(date)").count
+      @dates = Crime.group("date(date)").count
     end
     @datearr = @dates.to_a
     @datearr.each do |date|

@@ -9521,6 +9521,7 @@
         height = 500 - margin.top - margin.bottom;
 
     var parseDate = d3.time.format("%Y-%m-%d").parse;
+        bisectDate = d3.bisector(function(d) { return d.date; }).left;
 
     var x = d3.time.scale()
         .range([0, width]);
@@ -9564,6 +9565,9 @@
         .x(function(d) { return x(d.date); })
         .y(function(d) { return y1(d.temperature); });
 
+    var focus = svg.append("g")
+        .style("display", "none");
+
     d3.json('/crimes.json', function (data) {
       data.forEach(function(d) {
         d.date = parseDate(d.crimedate);
@@ -9586,6 +9590,7 @@
         .attr("class", "valueline")
         .attr("d", valueline(data));
 
+
     svg.append("path")
         .attr("class", "valueline2")
         .attr("d", valueline2(data));
@@ -9606,7 +9611,7 @@
       .style("text-anchor", "end")
       .text("Crimes")
       .style("fill", "red")
-      .style("")
+      .style("font-size", "1.5em");
 
     svg.append("g")
           .attr("class", "y axis")
@@ -9616,10 +9621,52 @@
           .call(yAxisRight)
         .append("text")
           .attr("transform", "rotate(-90)")
-          .attr("y", 6)
+          .attr("y", -16)
           .attr("dy", ".71em")
           .style("text-anchor", "end")
           .text("Temperature")
-          .style("fill", "green");
+          .style("fill", "green")
+          .style("font-size", "1.5em");
+
+      focus.append("circle")
+          .attr("class", "y")
+          .style("fill", "#00007A")
+          .style("stroke", "#00007A")
+          .attr("r", 4);
+
+      focus.append("text")
+          .attr("x", 9)
+          .attr("dy", ".35em");
+
+      svg.append("rect")
+          .attr("width", width)
+          .attr("height", height)
+          .style("fill", "none")
+          .style("pointer-events", "all")
+          .on("mouseover", function() { focus.style("display", null); })
+          .on("mouseout", function() { focus.style("display", "none"); })
+          .on("mousemove", mousemove);
+
+      function mousemove() {
+          var x0 = x.invert(d3.mouse(this)[0]),
+              i = bisectDate(data, x0, 1),
+              d0 = data[i - 1],
+              d1 = data[i],
+              d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+
+          focus.select("circle.y")
+              .attr("transform",
+                    "translate(" + x(d.date) + "," +
+                                   y(d.crimes) + ")");
+
+          focus.select("text").text(d.date.toString().slice(0,15) + "  Crimes: " + d.crimes + "   Temp: " + d.temperature)
+              .attr("transform",
+                "translate(" + x(d.date) + "," +
+                               y(d.crimes) + ")")
+              .style("stroke", "#00007A")
+              .style("font-size", "1.5em");
+      }
     });
+
+
   </script>

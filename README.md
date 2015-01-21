@@ -2,7 +2,7 @@
 
 
 The interesting D3:
-  <script>
+
     var margin = {top: 20, right: 20, bottom: 30, left: 50},
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
@@ -126,4 +126,3 @@ The interesting D3:
               .style("font-size", "1.5em");
       }
     });
-  </script>

@@ -4,10 +4,17 @@ class FiltersController < ApplicationController
   # GET /filters
   # GET /filters.json
   def index
-    if params[:year].present?
-      @dates = Crime.where(arrest: "true", year: params["year"]).group(:date).count
-    else
+    if params[:arrest].present?
+      if params[:arrest] == "Arrest"
+        arrest_val = 'arrest: "true",'
+      elsif params[:arrest] == "No Arrest"
+        arrest_val = 'arrest: "false",'
+      else
+        arrest_val = "arrest is NOT NULL"
+    end
       @dates = Crime.where(arrest: "true").group("date(date)").count
+    else
+      @dates = Crime.group("date(date)").count
     end
     @datearr = @dates.to_a
     @datearr.each do |date|

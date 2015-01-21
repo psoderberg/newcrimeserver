@@ -8,7 +8,7 @@
 require 'csv'
 require 'date'
 require 'zlib'
-# Crime.delete_all
+Crime.delete_all
 CSV.foreach("#{Rails.root}/lib/data/Crimes_-_2013.csv") do |row|
       Crime.create!(
         crime_id: row[0],
